@@ -1,0 +1,28 @@
+git diff  /*-- see the changes made 
+git status /*-- see the files that are in the commitment phase
+git -add -A /*-- add the changed file to commitment phase
+git commit -m "Comment" /*-- commit the changed that are in the the commitment phase
+----------get commited in local dir------------
+
+----------linking branch to the remote branche--------
+git clone <url in github> /LocalDirectory
+
+
+--------push the file to the remoted directory-------
+
+git pull origin master ----if everything is up to date we push it
+git push origin master ----pushing the file to the remote directory-------
+-----not a good idea to work on the master branch ,so we make branches 
+git branch nameOfThebranch
+git branch -a  ----list the branches and the one with * is the one that we're working with
+git checkout nameOfThebranch -----changing the branch that we are working with *
+git push -u origin nameOfThebranch ----pushing to the remote branch /the -u is for assoisiating the branches so the next usage can be just"git push ,git pull"
+---------Merge a branch--------------------
+git bracnh --merged --- list the merged branches
+git checkout master ---changing * to master
+git pull origin master --pulling last updated master
+git merge nameOfThebranch ---merging master with branch
+git push origin master --- pushing the master to the remote directory
+----------delete bracnh---------
+git branch -d nameOfThebranch ---deleting the bracnh from the local directory	
+git push origin --delete nameOfThebranch --- deleting the bracnh in the remote directory
