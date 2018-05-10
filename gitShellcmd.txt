@@ -5,7 +5,7 @@ git commit -m "Comment" /*-- commit the changed that are in the the commitment p
 ----------get commited in local dir------------
 
 ----------linking branch to the remote branche--------
-git clone <url in github> /LocalDirectory
+git clone <url in github>.git /LocalDirectory
 
 
 --------push the file to the remoted directory-------
