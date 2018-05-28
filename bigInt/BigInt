@@ -1,0 +1,232 @@
+import java.util.ArrayList;
+
+import java.util.List;
+
+public class BigInt {
+	 private List<Integer> digitsAsList;
+	    boolean isPositive;
+	 
+	    BigInt(String input) {
+	        if ("-".equals(input.substring(0, 1))) {
+	            
+	                this.isPositive = false;
+	                this.setDigits(input.substring(1, input.length()));
+	            } 
+	            
+	         else {
+	            
+	                this.isPositive = true;
+	                this.setDigits(input.substring(1, input.length()));
+	           
+	        }
+	    }
+	 
+	   
+	 
+	    BigInt add(BigInt second) {
+	        List<Integer> firstList = this.getDigits();
+	        List<Integer> secondList = second.getDigits();
+	        
+	        
+	 
+	        if (this.isPositive && second.isPositive) {
+	            String result = "";
+	            if (compareNums(firstList, secondList) == -1) {
+	                result = sum(secondList, firstList);
+	            } else {
+	                result = sum(firstList, secondList);
+	            }
+	            return new BigInt(result);
+	        }
+	        if (!this.isPositive && !second.isPositive) {
+	            String result = "";
+	            if (compareNums(firstList, secondList) == -1) {
+	                result = sum(secondList, firstList);
+	            } else {
+	                result = sum(firstList, secondList);
+	            }
+	            return new BigInt("-" + result);
+	        }
+	 
+	        if (this.isPositive && !second.isPositive) {
+	            if (compareNums(firstList, secondList) == 1) {
+	                return new BigInt(subtract(firstList, secondList));
+	            } else {
+	                return new BigInt("-" + subtract(secondList, firstList));
+	            }
+	        }
+	 
+	        if (!this.isPositive && second.isPositive) {
+	            if (compareNums(firstList, secondList) == -1) {
+	                return new BigInt(subtract(secondList, firstList));
+	            } else {
+	                return new BigInt("-" + subtract(firstList, secondList));
+	            }
+	        }
+	        
+	        return null;
+	    }
+	 
+	    BigInt subtract(BigInt second) {
+	        List<Integer> firstList = this.getDigits();
+	        List<Integer> secondList = second.getDigits();
+	        
+	 
+	        if (this.isPositive && second.isPositive) {
+	            if (compareNums(firstList, secondList) == 1) {
+	                return new BigInt(subtract(firstList, secondList));
+	            } else {
+	                return new BigInt("-" + subtract(secondList, firstList));
+	            }
+	        }
+	        if (!this.isPositive && !second.isPositive) {
+	            if (compareNums(firstList, secondList) == 1) {
+	                
+	                return new BigInt("-" + subtract(firstList, secondList));
+	            } else {
+	                // -10 ; -50 => - 10 - (-50) => -10 + 50 => 50 - 10;
+	                return new BigInt(subtract(secondList, firstList));
+	            }
+	        }
+	        if (this.isPositive && !second.isPositive) {
+	            if (compareNums(firstList, secondList) == 1) {
+	                // 30 - (-10); => 30 + 10;
+	                return new BigInt(sum(firstList, secondList));
+	            } else {
+	                // 30 - (-50) => 30 + 50;
+	                return new BigInt(sum(secondList, firstList));
+	            }
+	        }
+	 
+	        if (!this.isPositive && second.isPositive) {
+	            if (compareNums(firstList, secondList) == 1) {
+	                // -50 - (20); =>-50 -20 => - (50 + 20);
+	                return new BigInt("-" + sum(firstList, secondList));
+	            } else {
+	                // - 50 - (150) => - (50 + 150) => - (150 + 50);
+	                return new BigInt("-" + sum(secondList, firstList));
+	            }
+	        }
+	 
+	       
+	        return null;
+	    }
+	   
+	 
+	    private String sum(List<Integer> firstNumber, List<Integer> secondNumber) {
+	        if (compareNums(firstNumber, secondNumber) == -1) {
+	            List<Integer> temp = new ArrayList<>();
+	            temp = secondNumber;
+	            secondNumber = firstNumber;
+	            firstNumber = temp;
+	        }
+	        int toAdd = 0;
+	        StringBuilder sb = new StringBuilder();
+	        Integer difference = firstNumber.size() - secondNumber.size();
+	        for (int i = secondNumber.size() - 1; i >= 0; i--) {
+	            Integer firstEdinica = firstNumber.get(i + difference);
+	            Integer secondEdinica = secondNumber.get(i);
+	            int result = firstEdinica + secondEdinica + toAdd;
+	            sb.append(result % 10);
+	            toAdd = result / 10;
+	        }
+	        for (int i = difference - 1; i >= 0; i--) {
+	            Integer firstEdinica = firstNumber.get(i);
+	            int result = firstEdinica + toAdd;
+	            sb.append(result % 10);
+	            toAdd = result / 10;
+	        }
+	        if (toAdd == 1) {
+	            sb.append(toAdd);
+	        }
+	        return sb.reverse().toString();
+	    }
+	    
+	    private static String subtract(List<Integer> firstNumber, List<Integer> secondNumber) {
+	        StringBuilder sb = new StringBuilder();
+	        int result = 0;
+	        int toRemember = 0;
+	        int first;
+	        int second = 0;
+	 
+	        for (int i = 0; i < firstNumber.size(); i++) {
+	            if (i >= secondNumber.size()) {
+	                first = firstNumber.get(firstNumber.size() - 1 - i);
+	            } else {
+	                second = secondNumber.get(secondNumber.size() - 1 - i);
+	                first = firstNumber.get(firstNumber.size() - 1 - i);
+	            }
+	            if (first - toRemember - second >= 0) {
+	                result = first - toRemember - second;
+	                toRemember = 0;
+	            } else {
+	                result = first + 10 - toRemember - second;
+	                toRemember = 1;
+	            }
+	            sb.append(String.valueOf(result));
+	            second = 0;
+	        }
+	        sb.reverse();
+	        // Here we remove the zeroes from the beginning in the result
+	        while (sb.charAt(0) == '0' && sb.length() > 1) {
+	            sb.deleteCharAt(0);
+	        }
+	        if (sb.length() == 0) {
+	            sb.append("0");
+	        }
+	        return sb.toString();
+	    }
+	    
+	 
+	    private void setDigits(String input) {
+	        List<Integer> listInput = new ArrayList<>();
+	        for (int i = 0; i < input.length(); i++) {
+	        	listInput.add(Integer.valueOf(input.substring(i, i + 1)));
+	        }
+	        this.digitsAsList = listInput;
+	    }
+	 
+	    private List<Integer> getDigits() {
+	        return this.digitsAsList;
+	    }
+	 
+	   
+	 
+	    private int compareNums(List<Integer> firstNumber, List<Integer> secondNumber) {
+	        if (firstNumber.size() > secondNumber.size()) {
+	            return 1;
+	        } else if (firstNumber.size() < secondNumber.size()) {
+	            return -1;
+	        } else {
+	            return compareEqualNums(firstNumber, secondNumber);
+	        }
+	    }
+	 
+	    private int compareEqualNums(List<Integer> firstNumber, List<Integer> secondNumber) {
+	        for (int i = 0; i < firstNumber.size(); i++) {
+	            int leadingFirst = firstNumber.get(i);
+	            int leadingSecond = secondNumber.get(i);
+	            if (leadingFirst > leadingSecond) {
+	                return 1;
+	            }
+	            if (leadingFirst < leadingSecond) {
+	                return -1;
+	            }
+	        }
+	        return 1;
+	    }
+	 
+	    @Override
+	    public String toString() {
+	        StringBuilder sb = new StringBuilder();
+	 
+	        if (!this.isPositive) {
+	            sb.append("-");
+	        }
+	 
+	        for (int i : this.digitsAsList) {
+	            sb.append(i);
+	        }
+	        return sb.toString();
+	    }
+}
